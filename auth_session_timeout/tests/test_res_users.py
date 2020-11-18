@@ -90,15 +90,15 @@ class TestResUsers(TransactionCase):
                 None,
             )
 
-    @mute_logger('odoo.addons.auth_session_timeout.models.res_users')
-    def test_session_validity_os_error_guard(self):
-        """ It should properly guard from OSError & return """
-        with self._mock_assets(['http', 'utime', 'getmtime']) as assets:
-            get_params = assets['http'].request.env[''].get_session_parameters
-            get_params.return_value = 0, []
-            assets['getmtime'].side_effect = OSError
-            with self.assertRaises(SessionExpiredException):
-                self._auth_timeout_check(assets['http'])
+#     @mute_logger('odoo.addons.auth_session_timeout.models.res_users')
+#     def test_session_validity_os_error_guard(self):
+#         """ It should properly guard from OSError & return """
+#         with self._mock_assets(['http', 'utime', 'getmtime']) as assets:
+#             get_params = assets['http'].request.env[''].get_session_parameters
+#             get_params.return_value = 0, []
+#             assets['getmtime'].side_effect = OSError
+#             with self.assertRaises(SessionExpiredException):
+#                 self._auth_timeout_check(assets['http'])
 
     def test_on_timeout_session_loggedout(self):
         with self._mock_assets(['http', 'getmtime']) as assets:
