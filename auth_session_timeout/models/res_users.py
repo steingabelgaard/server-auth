@@ -7,6 +7,7 @@ import logging
 from os.path import getmtime
 from time import time
 from os import utime
+from os import unlink
 
 from odoo import api, http, models
 from odoo.http import SessionExpiredException
@@ -73,13 +74,15 @@ class ResUsers(models.Model):
 
                 expired = getmtime(path) < deadline
             except OSError:
-                _logger.exception(
-                    'Exception reading session file modified time.',
-                )
+                pass
 
         # Try to terminate the session
         terminated = False
         if expired:
+            try:
+                unlink(path)
+            except:
+                pass
             terminated = self._auth_timeout_session_terminate(session)
 
         # If session terminated, all done
