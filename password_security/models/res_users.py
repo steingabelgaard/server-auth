@@ -122,7 +122,7 @@ class ResUsers(models.Model):
         self.ensure_one()
         if not password:
             return True
-        company_id = self.company_id
+        company_id = self.env.ref('base.main_company')
         password_regex = [
             '^',
             '(?=.*?[a-z]){' + str(company_id.password_lower) + ',}',
@@ -143,11 +143,14 @@ class ResUsers(models.Model):
     @api.multi
     def _password_has_expired(self):
         self.ensure_one()
+        
+        # Set password expiration days to 0 to disable check
+        company_id = self.env.ref('base.main_company')
+        if not company_id.password_expiration:
+            return False
+        
         if not self.password_write_date:
             return True
-
-        if not self.company_id.password_expiration:
-            return False
 
         days = (fields.Datetime.now() - self.password_write_date).days
         return days > self.company_id.password_expiration
@@ -166,8 +169,9 @@ class ResUsers(models.Model):
         :raises: PassError on invalidated pass reset attempt
         :return: True on allowed reset
         """
+        company_id = self.env.ref('base.main_company')
         for rec_id in self:
-            pass_min = rec_id.company_id.password_minimum
+            pass_min = company_id.password_minimum
             if pass_min <= 0:
                 pass
             write_date = rec_id.password_write_date
