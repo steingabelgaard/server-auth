@@ -59,7 +59,7 @@ class ResUsers(models.Model):
     @api.model
     def get_password_policy(self):
         data = super(ResUsers, self).get_password_policy()
-        company_id = self.env.user.company_id
+        company_id = self.env.ref('base.main_company')
         data.update(
             {
                 "password_lower": company_id.password_lower,
@@ -153,7 +153,7 @@ class ResUsers(models.Model):
             return True
 
         days = (fields.Datetime.now() - self.password_write_date).days
-        return days > self.company_id.password_expiration
+        return days > company_id.password_expiration
 
     @api.multi
     def action_expire_password(self):
@@ -190,8 +190,9 @@ class ResUsers(models.Model):
         :raises: PassError on reused password
         """
         crypt = self._crypt_context()
+        company_id = self.env.ref('base.main_company')
         for rec_id in self:
-            recent_passes = rec_id.company_id.password_history
+            recent_passes = company_id.password_history
             if recent_passes < 0:
                 recent_passes = rec_id.password_history_ids
             else:
@@ -202,7 +203,7 @@ class ResUsers(models.Model):
                     lambda r: crypt.verify(password, r.password_crypt)):
                 raise PassError(
                     _('Cannot use the most recent %d passwords') %
-                    rec_id.company_id.password_history
+                    company_id.password_history
                 )
 
     def _set_encrypted_password(self, uid, pw):

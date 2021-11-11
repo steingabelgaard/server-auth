@@ -11,7 +11,7 @@ class ResCompany(models.Model):
 
     password_expiration = fields.Integer(
         'Days',
-        default=60,
+        default=0,
         help='How many days until passwords expire',
     )
     password_length = fields.Integer(
