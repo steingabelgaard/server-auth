@@ -100,6 +100,8 @@ class ResUsers(models.Model):
             try:
                 utime(path, None)
             except OSError:
-                _logger.exception(
-                    'Exception updating session file access/modified times.',
-                )
+                # No need to polute log with these exceptions
+                # _logger.exception(
+                #    'Exception updating session file access/modified times.',
+                # )
+                pass
