@@ -59,7 +59,7 @@ class ResUsers(models.Model):
     @api.model
     def get_password_policy(self):
         data = super(ResUsers, self).get_password_policy()
-        company_id = self.env.ref('base.main_company')
+        company_id = self.sudo().env.ref('base.main_company')
         data.update(
             {
                 "password_lower": company_id.password_lower,
@@ -89,7 +89,7 @@ class ResUsers(models.Model):
     @api.multi
     def password_match_message(self):
         self.ensure_one()
-        company_id = self.company_id
+        company_id = self.env.ref('base.main_company')
         message = []
         if company_id.password_lower:
             message.append('\n* ' + 'Lowercase letter (At least ' + str(
@@ -122,7 +122,7 @@ class ResUsers(models.Model):
         self.ensure_one()
         if not password:
             return True
-        company_id = self.env.ref('base.main_company')
+        company_id = self.sudo().env.ref('base.main_company')
         password_regex = [
             '^',
             '(?=.*?[a-z]){' + str(company_id.password_lower) + ',}',
@@ -145,7 +145,7 @@ class ResUsers(models.Model):
         self.ensure_one()
         
         # Set password expiration days to 0 to disable check
-        company_id = self.env.ref('base.main_company')
+        company_id = self.sudo().env.ref('base.main_company')
         if not company_id.password_expiration:
             return False
         
@@ -169,7 +169,7 @@ class ResUsers(models.Model):
         :raises: PassError on invalidated pass reset attempt
         :return: True on allowed reset
         """
-        company_id = self.env.ref('base.main_company')
+        company_id = self.sudo().env.ref('base.main_company')
         for rec_id in self:
             pass_min = company_id.password_minimum
             if pass_min <= 0:
@@ -190,7 +190,7 @@ class ResUsers(models.Model):
         :raises: PassError on reused password
         """
         crypt = self._crypt_context()
-        company_id = self.env.ref('base.main_company')
+        company_id = self.sudo().env.ref('base.main_company')
         for rec_id in self:
             recent_passes = company_id.password_history
             if recent_passes < 0:
