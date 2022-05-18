@@ -10,14 +10,17 @@ setuptools.setup(
     install_requires=[
         'odoo12-addon-auth_admin_passkey',
         'odoo12-addon-auth_api_key',
+        'odoo12-addon-auth_api_key_environment',
         'odoo12-addon-auth_from_http_remote_user',
         'odoo12-addon-auth_ldap_attribute_sync',
         'odoo12-addon-auth_ldaps',
         'odoo12-addon-auth_oauth_multi_token',
+        'odoo12-addon-auth_oidc',
         'odoo12-addon-auth_saml',
         'odoo12-addon-auth_session_timeout',
         'odoo12-addon-auth_signup_verify_email',
         'odoo12-addon-auth_totp',
+        'odoo12-addon-auth_totp_password_security',
         'odoo12-addon-auth_u2f',
         'odoo12-addon-auth_user_case_insensitive',
         'odoo12-addon-base_user_show_email',
@@ -30,5 +33,6 @@ setuptools.setup(
     classifiers=[
         'Programming Language :: Python',
         'Framework :: Odoo',
+        'Framework :: Odoo :: 12.0',
     ]
 )

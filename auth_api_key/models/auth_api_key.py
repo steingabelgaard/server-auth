@@ -1,22 +1,24 @@
 # Copyright 2018 ACSONE SA/NV
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+import uuid
 
 from odoo import api, fields, models, tools, _
-
 from odoo.tools import consteq
-
 from odoo.exceptions import ValidationError, AccessError
 
 
 class AuthApiKey(models.Model):
     _name = "auth.api.key"
-    _inherit = "server.env.mixin"
     _description = "API Key"
+
+    def _default_key(self):
+        return uuid.uuid4()
 
     name = fields.Char(required=True)
     key = fields.Char(
         required=True,
-        help="""The API key. Enter a dummy value in this field if it is
+        default=lambda self: self._default_key(),
+        help="""The API key. Keep the default value in this field if it is
         obtained from the server environment configuration.""",
     )
     user_id = fields.Many2one(
@@ -30,27 +32,6 @@ class AuthApiKey(models.Model):
     _sql_constraints = [
         ("name_uniq", "unique(name)", "Api Key name must be unique.")
     ]
-
-    @api.multi
-    def _server_env_section_name(self):
-        """Name of the section in the configuration files
-
-        We override the default implementation to keep the compatibility
-        with the previous implementation of auth_api_key. The section name
-        into the configuration file must be formatted as
-
-            'api_key_{name}'
-
-        """
-        self.ensure_one()
-        return "api_key_{}".format(self.name)
-
-    @property
-    def _server_env_fields(self):
-        base_fields = super()._server_env_fields
-        api_key_fields = {"key": {}}
-        api_key_fields.update(base_fields)
-        return api_key_fields
 
     @api.model
     def _retrieve_api_key(self, key):
