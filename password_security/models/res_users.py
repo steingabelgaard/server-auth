@@ -92,21 +92,21 @@ class ResUsers(models.Model):
         company_id = self.env.ref('base.main_company')
         message = []
         if company_id.password_lower:
-            message.append('\n* ' + 'Lowercase letter (At least ' + str(
-                company_id.password_lower) + ' character)')
+            message.append('\n* ' + 'Små bogstaver (Mindst ' + str(
+                company_id.password_lower) + ' tegn)')
         if company_id.password_upper:
-            message.append('\n* ' + 'Uppercase letter (At least ' + str(
-                company_id.password_upper) + ' character)')
+            message.append('\n* ' + 'Store bogstaver (mindst ' + str(
+                company_id.password_upper) + ' tegn)')
         if company_id.password_numeric:
-            message.append('\n* ' + 'Numeric digit (At least ' + str(
-                company_id.password_numeric) + ' character)')
+            message.append('\n* ' + 'Numerisk ciffer (mindst ' + str(
+                company_id.password_numeric) + ' tegn)')
         if company_id.password_special:
-            message.append('\n* ' + 'Special character (At least ' + str(
-                company_id.password_special) + ' character)')
+            message.append('\n* ' + 'Specialtegn (mindst ' + str(
+                company_id.password_special) + ' tegn)')
         if message:
             message = [_('Must contain the following:')] + message
         if company_id.password_length:
-            message = ['Password must be %d characters or more.' %
+            message = ['Adgangskoden skal være %d tegn eller mere.' %
                        company_id.password_length
                        ] + message
         return '\r'.join(message)
